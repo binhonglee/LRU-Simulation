@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 class lru_sim
 {
-  static int[] data = new int[]{8, 4, 12, 5, 3, 1, 0, 20};
+  static int[][] data = {{8, 0}, {4, 1}, {12, 2}, {5, 3}, {3, 4}, {1, 5}, {0, 6}, {20,7}};
   static File source = new File("SOURCE.TXT");
   static int hit = 0;
   static int miss = 0;
@@ -32,41 +32,45 @@ class lru_sim
   {
     for (int i = 0; i < data.length; i++)
     {
-      if (data[i] == current)
+      if (data[i][0] == current)
       {
         hit++;
-        update(i);
-        break;
-      } else if (i == data.length-1)
-      {
-        miss++;
-        update();
+        update(data[i][1]);
+        data[i][1] = 7;
+        return;
       }
     }
 
-    data[data.length-1] = current;
-  }
+    miss++;
 
-  public static void update()
-  {
-    update(0);
+    int i = 0;
+    update(i);
+
+    while (data[i][1] != 0)
+      i++;
+
+    data[i][0] = current;
+    data[i][1] = 7;
   }
 
   public static void update(int start)
   {
-    for (int i = start; i < data.length - 1; i++)
+    for (int i = 0; i < data.length; i++)
     {
-      data[i] = data[i+1];
+      if (data[i][1] > start)
+      {
+        data[i][1]--;
+      }
     }
   }
 
   public static void printData()
   {
-    System.out.println("Location\tValue");
+    System.out.println("Location\tValue\tSequence");
 
     for (int i = 0; i < data.length; i++)
     {
-      System.out.println(i + "\t\t" + data[i]);
+      System.out.println(i + "\t\t" + data[i][0] + "\t" + data[i][1]);
     }
     System.out.println();
   }
